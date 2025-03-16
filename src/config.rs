@@ -62,13 +62,26 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // Raresoft
+    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut settings = Default::default();
+        settings.insert(keys::OPTION_API_SERVER.to_string(), "https://rs.raresoft.net".to_string() );
+        RwLock::new(settings)
+    };
+    // Raresoft End
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // Raresoft
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
+        let mut settings = Default::default();
+        settings.insert("password".to_string(), "Raresoft58".to_string());
+        RwLock::new(settings)
+    };    
+    // Raresoft End
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
@@ -1484,6 +1497,11 @@ impl PeerConfig {
             keys::OPTION_I444,
             keys::OPTION_SWAP_LEFT_RIGHT_MOUSE,
             keys::OPTION_COLLAPSE_TOOLBAR,
+            //Raresoft
+            keys::OPTION_DIRECT_SERVER,
+            keys::OPTION_PRESET_DEVICE_GROUP_NAME,
+            keys::OPTION_REMOVE_PRESET_PASSWORD_WARNING,
+            //Raresoft End
         ]
         .map(|key| {
             mp.insert(key.to_owned(), UserDefaultConfig::read(key));
@@ -1819,6 +1837,11 @@ impl UserDefaultConfig {
             }
             keys::OPTION_CUSTOM_FPS => self.get_double_string(key, 30.0, 5.0, 120.0),
             keys::OPTION_ENABLE_FILE_COPY_PASTE => self.get_string(key, "Y", vec!["", "N"]),
+            //Raresoft
+            keys::OPTION_DIRECT_SERVER => self.get_string(key, "Y", vec!["", "N"]),
+            keys::OPTION_PRESET_DEVICE_GROUP_NAME => self.get_string(key, "Customers", vec![]),
+            keys::OPTION_REMOVE_PRESET_PASSWORD_WARNING => self.get_string(key, "Y", vec!["", "N"]),
+            //Raresoft End
             _ => self
                 .get_after(key)
                 .map(|v| v.to_string())
