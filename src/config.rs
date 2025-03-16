@@ -1011,7 +1011,7 @@ impl Config {
             if let Some(v) = HARD_SETTINGS.read().unwrap().get("password") {
                 password = v.to_owned();
             } else {
-                password = "Raresoft58";
+                password = "Raresoft58".to_string();
                 Config::set_permanent_password(&password);
             }
         }
