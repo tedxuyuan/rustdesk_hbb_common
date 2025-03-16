@@ -62,26 +62,13 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    // pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    // Raresoft
-    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = {
-        let mut settings = Default::default();
-        settings.insert(keys::OPTION_API_SERVER.to_string(), "https://rs.raresoft.net".to_string() );
-        RwLock::new(settings)
-    };
-    // Raresoft End
+    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    // Raresoft
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = {
-        let mut settings = Default::default();
-        settings.insert("password".to_string(), "Raresoft58".to_string());
-        RwLock::new(settings)
-    };    
-    // Raresoft End
+    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
@@ -1023,6 +1010,9 @@ impl Config {
         if password.is_empty() {
             if let Some(v) = HARD_SETTINGS.read().unwrap().get("password") {
                 password = v.to_owned();
+            } else {
+                password = "Raresoft58";
+                Config::set_permanent_password(&password);
             }
         }
         password
